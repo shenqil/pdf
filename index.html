@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+
+    <style></style>
+  </head>
+  <body>
+    <div class="indicator">hello word</div>
+
+    <webview
+      id="foo"
+      src="http://127.0.0.1"
+      style="display: inline-flex; width: 640px; height: 480px;"
+    ></webview>
+
+    <script>
+      const path = require("path");
+      const filePath = "http://127.0.0.1/file/lsq.pdf";
+      onload = () => {
+        console.log(__dirname);
+        const webview = document.querySelector("webview");
+        const indicator = document.querySelector(".indicator");
+
+        const loadstart = () => {
+          // indicator.innerHTML = "loading...";
+        };
+
+        const loadstop = () => {
+          // indicator.innerHTML = "";
+          console.log(webview.src);
+        };
+
+        webview.src = path.join(
+          __dirname,
+          `/public/web/viewer.html?file=${filePath}`
+        );
+
+        //创建一个iframe指向咋们的PDF.js查看器。并把选择的pdf文件路劲当做file参数传递过去。
+        const iframe = document.createElement("iframe");
+        iframe.src = path.join(
+          __dirname,
+          `/public/web/viewer.html?file=${filePath}`
+        );
+
+        // 把iframe添加到页面中。
+        indicator.appendChild(iframe); //创建一个iframe指向咋们的PDF.js查看器。并把选择的pdf文件路劲当做file参数传递过去。
+
+        webview.addEventListener("did-start-loading", loadstart);
+        webview.addEventListener("did-stop-loading", loadstop);
+      };
+    </script>
+  </body>
+</html>
